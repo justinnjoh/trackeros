@@ -1,0 +1,194 @@
+
+/* custom styles */
+
+/* debug stuff starts */
+.border-red {
+  border: 1px dashed #f00;
+}
+
+.border-blue {
+  border: 1px dashed #00f;
+}
+
+.border-green {
+  border: 1px dashed #0f0;
+}
+
+.border-orange {
+  border: 1px dashed #ffa500;
+}
+
+/* debug stuff ends */
+
+
+body {
+  margin: 0px 10px;
+
+  color: #555;
+  font-family: "Lato", sans-serif;
+  line-height: 1.5em;
+}
+
+
+::selection {
+  background: #1ABC9C;
+  color: #FFF;
+  text-shadow: none;
+}
+
+::-moz-selection {
+  background: #1ABC9C; /* Firefox */
+  color: #FFF;
+  text-shadow: none;
+}
+
+::-webkit-selection {
+  background: #1ABC9C; /* Safari */
+  color: #FFF;
+  text-shadow: none;
+}
+
+:hover,
+:active,
+:focus {
+  outline: none !important;
+  text-decoration: none !important;
+}
+
+
+.menu {
+  display: block;
+}
+
+.menu ul {
+  padding: 0px;
+  margin: 0px;
+  list-style: none;
+}
+
+.menu ul li {
+  display: block;
+  float: right;
+  padding: 0px 0px 0px 20px;
+}
+
+
+/* stats starts */
+table.stats {
+  width: 100%;
+  margin: 2px 0px 10px 0px;
+}
+
+table.stats thead {
+  background-color: #eee;
+}
+
+table.stats tr {
+  padding: 10px 0px 10px 0px;
+
+  border-top: 1px solid #ccc;
+}
+
+table.stats tr:last-child {
+  border-bottom: 1px solid #ccc;
+}
+
+table.stats th {
+  font-weight: normal;
+}
+
+table.stats th, 
+table.stats td {
+  padding: 0px 10px 0px 10px;
+  font-size: 0.9em;
+  border-left: 1px solid #ccc;
+}
+
+table.stats th:last-child, 
+table.stats td:last-child {
+  border-right: 1px solid #ccc;
+}
+
+table.stats td {
+  text-align: center;
+}
+
+/* stats ends */
+
+
+/* footer starts */
+
+.footer {
+  border-top : 3px solid #007BC7;
+  padding-top: 2px;
+
+  background-color: #333;
+}
+
+/* footer ends */
+
+
+/* images */
+
+img.thumb {
+  float: left;
+  width: 80px;
+  height: 80px;
+  margin: 4px 8px 4px 0px;
+}
+
+img.thumb-sm {
+  width: 40px;
+  height: 40px;
+}
+
+fieldset.uploads {
+  border: 1px solid #5BC0DE;
+}
+
+fieldset.uploads label {
+  width: 100%;
+  padding: 0px 4px 0px 4px;
+}
+
+.block-thumb span {
+  line-height: 34px;  
+}
+
+/* images */
+
+
+
+/* general - STARTS */
+
+ul.post-guestimates {
+  border: 1px solid #5BC0DE;
+}
+
+
+.priority {
+  font-size: 1rem; 
+  padding-top: 4px
+}
+
+.block {
+  display: block;
+}
+
+.pad4 {
+  padding: 4px;
+}
+
+.reduce-bs-margins {
+  margin: 0.09rem;
+}
+
+.side-header {
+  padding: 0.35rem;
+  margin-top: 1px;
+}
+
+/* general - ENDS */
+
+
+/* nice blue #007BC7 */

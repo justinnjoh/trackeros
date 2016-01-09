@@ -1,0 +1,11 @@
+[17-Dec-2015 22:07:36 Europe/London] PHP Parse error:  syntax error, unexpected ''info'' (T_CONSTANT_ENCAPSED_STRING), expecting ')' in D:\websites\tracker\app\models\post.php on line 1806
+[17-Dec-2015 22:08:17 Europe/London] PHP Parse error:  syntax error, unexpected '$result' (T_VARIABLE), expecting function (T_FUNCTION) in D:\websites\tracker\app\models\post.php on line 1857
+[18-Dec-2015 18:14:15 Europe/London] PHP Fatal error:  Cannot redeclare Post_Model::my_posts() in D:\websites\tracker\app\models\post.php on line 1875
+[19-Dec-2015 10:32:47 Europe/London] PHP Parse error:  syntax error, unexpected '$user_id' (T_VARIABLE) in D:\websites\tracker\app\views\posts\_list_posts.php on line 41
+[19-Dec-2015 10:32:51 Europe/London] PHP Parse error:  syntax error, unexpected '$user_id' (T_VARIABLE) in D:\websites\tracker\app\views\posts\_list_posts.php on line 41
+[27-Dec-2015 10:08:46 Europe/London] PHP Parse error:  syntax error, unexpected '" and ( ("' (T_CONSTANT_ENCAPSED_STRING) in D:\websites\tracker\app\models\post.php on line 262
+[27-Dec-2015 10:08:46 Europe/London] PHP Parse error:  syntax error, unexpected '" and ( ("' (T_CONSTANT_ENCAPSED_STRING) in D:\websites\tracker\app\models\post.php on line 262
+[29-Dec-2015 19:35:54 Europe/London] PHP Fatal error:  Cannot access empty property in D:\websites\tracker\app\models\post.php on line 406
+[29-Dec-2015 20:58:04 Europe/London] PHP Parse error:  syntax error, unexpected '" left outer join user_details' (T_CONSTANT_ENCAPSED_STRING) in D:\websites\tracker\app\models\post.php on line 1563
+[29-Dec-2015 21:00:02 Europe/London] PHP Parse error:  syntax error, unexpected '" left outer join user_details' (T_CONSTANT_ENCAPSED_STRING) in D:\websites\tracker\app\models\post.php on line 1563
+[29-Dec-2015 22:33:15 Europe/London] PHP Fatal error:  Call to a member function format() on boolean in D:\websites\tracker\app\models\post.php on line 1552
