@@ -435,9 +435,29 @@ class Template_Lib {
     return ($ret);
   }
 
+  public function get_page_title () {
+    // set in params; defaults to 'Simple Open Source Issue Tracker'
+    $title = isset($this->params["page_title"]) ? $this->params["page_title"] : "";
+    strlen($title) < 1 && $title = "Simple Open Source Issue Tracker";
 
+    return ($title); 
+  }
 
+  public function get_page_meta_tags() {
+    // set as k/v pairs array in params; defaults description & keywords are defined
+    $tags = array();
+    isset($this->params["page_meta_tags"]) && $tags = $this->params["page_meta_tags"];
 
+    array_key_exists("description", $tags) || $tags["description"] = "Simple open source issue tracker - free for personal and commercial use"; 
+    array_key_exists("keywords", $tags) || $tags["keywords"] = "issue, tracker, open source, project, management, free, personal, commercial"; 
+
+    $result = "";
+    foreach ( $tags as $key => $value ) {
+      $result .= '<meta name="' . $key . '" description ="' . $this->escape_string($value) . '">' . PHP_EOL;
+    }
+
+    return ($result);
+  }
 
   private function eval_get_file($file) {
     // evaluate and get results of this file into a string

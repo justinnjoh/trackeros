@@ -29,6 +29,8 @@ if ( !is_null($header) ) {
       $user_id = $item["created_by"];
       $caption = "Created by";
 
+      $title = $this->escape_string($item["title"]) . " - " . $item["id"];
+
       if ( $item["assigned_to"] > 0 ) {
         $name = $item["assigned_to_name"];
         $image = $item["assigned_to_image"];
@@ -50,14 +52,14 @@ if ( !is_null($header) ) {
             if ( $category_type == 10 ) {
           ?>
               <a href="/posts/show/<?php echo $item['id']; ?>" class="show-post">
-                <?php echo $this->escape_string($item["title"]); ?>
+                <?php echo $title; ?>
               </a>
           <?php 
             }
             else {
           ?>
              <a href="#" data-id="<?php echo $item['id']; ?>" data-action="show" class="add-post">
-                <?php echo $this->escape_string($item["title"]); ?>
+                <?php echo $title; ?>
               </a>
  
           <?php

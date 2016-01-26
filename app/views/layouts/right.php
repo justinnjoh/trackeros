@@ -83,11 +83,12 @@ else {
 
   $featured = $views_path . DIRECTORY_SEPARATOR . "posts" . DIRECTORY_SEPARATOR . "featured.php";
   $assigned_to_me = $views_path . DIRECTORY_SEPARATOR . "posts" . DIRECTORY_SEPARATOR . "posts_assigned.php";
+  $watched = $views_path . DIRECTORY_SEPARATOR . "posts" . DIRECTORY_SEPARATOR . "watched.php";
   $stats = $views_path . DIRECTORY_SEPARATOR . "posts" . DIRECTORY_SEPARATOR . "_stats.php";
 
   include($stats);
   include($assigned_to_me);
-  include($featured);
-}
+  include($watched);
+  include($featured);}
 ?>
 

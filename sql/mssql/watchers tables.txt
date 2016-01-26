@@ -1,0 +1,19 @@
+CREATE TABLE [dbo].[watcher_posts](
+  [user_id] [int] NOT NULL,
+  [post_id] [int] NOT NULL,
+ CONSTRAINT [PK_watcher_posts] PRIMARY KEY CLUSTERED 
+(
+  [user_id] ASC,
+  [post_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY];
+
+CREATE TABLE [dbo].[post_watchers](
+  [post_id] [int] NOT NULL,
+  [user_id] [int] NOT NULL,
+ CONSTRAINT [PK_post_watchers] PRIMARY KEY CLUSTERED 
+(
+  [post_id] ASC,
+  [user_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY];

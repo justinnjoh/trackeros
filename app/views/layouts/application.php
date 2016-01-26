@@ -5,8 +5,8 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Simple open source issue tracker - free for personal and commercial use">
 
+  <?php echo $this->get_page_meta_tags(); ?>
 
   <link href="/assets/stylesheets/fontawesome440/css/font-awesome.css" rel="stylesheet" media="all" type="text/css">
   <link href="/assets/stylesheets/bootstrap400/css/bootstrap.css" rel="stylesheet" media="all" type="text/css">
@@ -35,7 +35,7 @@
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
   <![endif]-->
   
-  <title>Simple Open Source Issue Tracker</title>
+  <title><?php echo $this->get_page_title(); ?></title>
   
 </head>
 

@@ -438,6 +438,26 @@ abstract class Base_Model {
     return ($query);
   }
 
+  public function set_nocount ($sql = null) {
+    // given an sql statement, set nocount to stop info output from DDL statements
+
+    $query = '';
+
+    switch ($this->dblibrary) {
+
+      case 'pdo_sqlsrv':
+        $query = $this->set_nocount_mssql($sql);
+        break;
+
+      case 'mysqli':
+        $query = $this->set_nocount_mysql($sql);
+        break;
+ 
+    }
+
+    return ($query);
+  }
+
 
 
   // experimental SIMPLE CRUD functions - END
@@ -1055,6 +1075,28 @@ abstract class Base_Model {
 
     return ($result);
   }
+
+  private function set_nocount_mssql ($sql = null) {
+    // given an sql statement, set no count on it
+
+    is_null($sql) && $sql = "";
+
+    $result = "set nocount on; " . $sql;
+
+    return ($result);
+  }
+
+  private function set_nocount_mysql ($sql = null) {
+    // given an sql statement, set no count on it; currently NOTHING to do - included for completeness
+
+    is_null($sql) && $sql = "";
+
+    $result = $sql;
+
+    return ($result);
+  }
+
+
 
 
 

@@ -10,17 +10,25 @@
     isset($this->params["featured_posts_result"]["data"]["header"]) && $header = $this->params["featured_posts_result"]["data"]["header"];
 ?>
 
-    <h5 class="bg-info side-header">
-      <?php echo $header; ?>
-    </h5>
+    <div class="card">
+      <div class="card-header card-info">
+        <?php echo $header; ?>
+      </div>
+
+      <div class="card-block">
 
     <?php
       if ( strlen($errors) > 0 ) {
-  	    echo $errors;
+        echo $errors;
       }
     else {
       include("_list_posts_minimal.php");
     }
+?>
+      </div>
+    </div>
+
+<?php
   }
 ?>
 

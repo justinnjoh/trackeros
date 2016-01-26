@@ -13,6 +13,12 @@ class Post_Model extends Base_model {
 
     $posts = array();
     $category = array();
+    $status_codes = array();
+
+    $sts_codes = "";
+    isset($_POST["sts"]) && $sts_codes = join(",", $_POST["sts"]);
+
+    $page_meta_tags = array();
 
     is_null($category_id) && $category_id = 0;
 
@@ -24,7 +30,7 @@ class Post_Model extends Base_model {
 
     if ( strlen($error) < 1 && strlen($info) < 1 ) {
 
-      $query = "select id, category, posts_status from categories where id = " . $category_id . 
+      $query = "select id, category, type, description, posts_status from categories where id = " . $category_id . 
         " and organisation_id = " . $org_id . "; " .
         " select posts.*, " .
         " assigned_to.name as assigned_to_name, assigned_to.image_url as assigned_to_image, " .
@@ -41,8 +47,22 @@ class Post_Model extends Base_model {
         " and (categories.type = 10 or " . $user_id . " > 0) " .
         " and ( (" . $rights . " >= 80) or (" . $rights . " >= 30 and posts.status in (10, 11, 1)) " .
         " or (posts.created_by = " . $user_id . " and posts.status in (10, 11, 1))" .
-        " or (posts.status in (10)) )" .
-        " order by posts.position, posts.id desc";
+        " or (posts.status in (10, 2)) )";
+
+      strlen($sts_codes) > 0 && $query .= " and posts.status in (" . $sts_codes . ")";
+
+      $query .= " order by posts.position, posts.status desc, posts.priority desc, posts.id desc; ";
+
+      $status = " select id, code, description, icon, class";
+      if ( strlen($sts_codes) > 0 ) {
+        $status .= ", case when id in (" . $sts_codes . ") then 'checked' else '' end as checked ";
+      }
+      else {
+        $status .= ", '' as checked ";
+      }
+
+      $status .= " from status_codes where id in (1, 2, 10, 11) order by id;";
+      $query .= $status;
 
       $res = $this->query($query);
 
@@ -56,12 +76,16 @@ class Post_Model extends Base_model {
       if ( strlen($error) < 1 ) {
         isset($res[0][0]) && $category = $res[0][0];
         isset($res[1]) && $posts = $res[1];
+        isset($res[2]) && $status_codes = $res[2];
       }
 
       if ( count($category) > 0 ) {
         $this_cat_id = $category["id"];
         $posts_status = $category["posts_status"];
         $type = $category["type"];
+
+        $page_title = $category["category"];
+        $page_meta_tags["description"] = $category["description"];
       }
 
       count($posts) < 1 && $type != 10 && $user_id < 1 && $info = "Please log in to view content in this category";
@@ -82,7 +106,8 @@ class Post_Model extends Base_model {
       'data' => array(
         'btn_label' => $user_id > 0 ? "Add New Post" : "",
         'posts' => $posts,
-        'category' => $category
+        'category' => $category,
+        'status_codes' => $status_codes
       ),
       'info' => $info,
       'protected' => $protected
@@ -95,6 +120,9 @@ class Post_Model extends Base_model {
     // get menu and reset this cat in session
     $this->get_menu();
     $this->get_helper_objects();
+
+    $this->template->assign("page_title", $page_title);
+    $this->template->assign("page_meta_tags", $page_meta_tags);
 
     $_SESSION['cat_id'] = $this_cat_id;
 
@@ -226,6 +254,7 @@ class Post_Model extends Base_model {
     $posts_status = 11;
     $commenting = 11;
 
+    $watching = 0;
     $can_edit = 0;
     $can_action = 0;
     $can_feature = 0;
@@ -238,6 +267,9 @@ class Post_Model extends Base_model {
     $images = array();
     $main_image = array();
     $featured = array();
+
+    $page_title = "";
+    $page_meta_tags = array();
 
     $rights = $this->template->get_session_value('rights', 0);
     $user_id = $this->template->get_session_value('user_id', 0);
@@ -276,7 +308,9 @@ class Post_Model extends Base_model {
         " (post_comments.created_by = " . $user_id . " and post_comments.status in (1, 10, 11)) or " .
         " (" . $rights . " >= 30 and post_comments.status in (1, 10, 11)) or " .
         " (post_comments.status = 10) ) order by post_comments.id; " .
-        " select * from featured_posts where post_id = " . $post_id . "; ";
+        " select * from featured_posts where post_id = " . $post_id . "; " .
+        " select * from post_watchers where post_id = " . $post_id .
+        " and user_id = " . $user_id . "; ";
 
       $res = $this->query($query);
 
@@ -289,8 +323,12 @@ class Post_Model extends Base_model {
         isset($res[2][0]) && $main_image = $res[2][0];
         isset($res[3]) && $comments = $res[3];
         isset($res[4][0]) && $featured = $res[4][0];
+        isset($res[5][0]) && count($res[5][0]) > 0 && $watching = 1;
 
         if ( count($post) > 0 ) {
+          $page_title = $post["title"] . " - " . $post["id"];
+          $page_meta_tags["description"] = $post["post"];
+
           if ( $post['text_in_file'] > 0 ) {
             $file_name = SITE_ROOT . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR .
               "docs" . DIRECTORY_SEPARATOR . "posts" . DIRECTORY_SEPARATOR . $post_id .
@@ -307,6 +345,7 @@ class Post_Model extends Base_model {
           $can_action = $rights >= 80 || ($rights >= 30 && $org_id == $this_org_id) || ($user_id == $post["created_by"]) || ($user_id > 0 && $user_id == $post["assigned_to"]) ? 1 : 0;
           $can_feature = $rights >= 80 ? 1 : 0;
 
+          $post["watching"] = $watching;
           $post["can_edit"] = $can_edit;
           $post["can_action"] = $can_action;
           $post["can_feature"] = $can_feature;
@@ -455,6 +494,9 @@ class Post_Model extends Base_model {
     $this->get_helper_objects();
     
     $this->template->assign("show_post_result", $result);
+
+    strlen($page_title) > 0 && $this->template->assign("page_title", $page_title);
+    $this->template->assign("page_meta_tags", $page_meta_tags);
     
     return ($result);
 
@@ -1496,7 +1538,7 @@ class Post_Model extends Base_model {
     // get top 10 posts assigned to logged in user
     // static route => automatically called
 
-    $result = $this->get_posts(null, 10, false);
+    $result = $this->get_posts(null, 10, 0);
     $result["data"]["header"] = "Assigned to me";
 
     $this->template->assign("posts_assigned_result", $result);
@@ -1506,7 +1548,7 @@ class Post_Model extends Base_model {
     // get posts assigned to this user - eg from 'Assigned to me' click
     // if count is passed, get lastest $count posts
 
-    $result = $this->get_posts($user_id, $count, false);
+    $result = $this->get_posts($user_id, $count, 0);
 
     $result["data"]["header"] = "Posts assigned to me";
 
@@ -1515,11 +1557,21 @@ class Post_Model extends Base_model {
     $this->template->assign("my_posts_result", $result);
   }
 
+  public function posts_watched () {
+    // get all posts watched by logged in user
+    // static route => automatically called
+
+    $result = $this->get_posts(null, null, 5);
+    $result["data"]["header"] = "Watched by me";
+
+    $this->template->assign("posts_watched_result", $result);
+  }
+
   public function my_posts ($user_id = null, $count = null) {
     // get posts created by this user - eg from 'Created by me' click
     // if count is passed, get lastest $count posts
 
-    $result = $this->get_posts($user_id, $count, true);
+    $result = $this->get_posts($user_id, $count, 3);
     $result["data"]["header"] = "Posts created by me";
 
     $this->get_menu();
@@ -1527,72 +1579,15 @@ class Post_Model extends Base_model {
     $this->template->assign("my_posts_result", $result);
   }
 
-
   public function featured_posts ($count = null) {
     // get featured posts - posts are featured for 7 days from the date featured
     // if count is passed, get $count featured posts
 
-    $error = "";
-    $debug = "";
-
-    $posts = array();
-
-    is_null($count) && $count = 0;
-
-    $user_id = $this->template->get_session_value("user_id", 0);
-    $org_id = $this->template->get_session_value('user_org_id', 0);
-
-    $user_id < 1 && $error = "Please log in first";
-
-    if ( strlen($error) < 1 ) {
-
-      $date = new DateTime();
-      $date = $date->add(new DateInterval('P7D'));
-
-      $where = " featured_posts.date <= '" . $date->format('Y-m-d H:i') . "' and posts.status = 10 and " .
-        " categories.organisation_id = " . $org_id;
-
-      $created && $where = " posts.status in (1, 2, 10, 11) and categories.organisation_id = " . $org_id .
-        " and posts.created_by = " . $user_id;
-
-      $query = "select posts.*, categories.category, " .
-        " assigned_to.name as assigned_to_name, assigned_to.image_url as assigned_to_image, " .
-        " creator.name as creator_name, creator.image_url as creator_image, " .
-        " categories.type as category_type " .
-        " from featured_posts inner join posts on featured_posts.post_id = posts.id " .
-        " left outer join user_details as assigned_to on posts.assigned_to = assigned_to.user_id " .
-        " left outer join user_details as creator on posts.created_by = creator.user_id " .
-        " inner join categories on posts.category_id = categories.id where " .
-        $where .
-        " order by featured_posts.date desc";
-
-      $count > 0 && $query = $this->add_limit_clause($query, $count);
-
-      $res = $this->query($query);
-
-      $error = $this->db_error;
-      DEBUG > 0 && $debug = $this->db_debug;
-
-      if ( strlen($error) < 1 ) {
-        isset($res[0]) && $posts = $res[0];
-      }
-    }
-
-    $result = array (
-      'errors' => array (
-          array('message' => $error, 'debug' => $debug)
-        ),
-      'data' => array(
-          "posts" => $posts,
-          "count" => $count
-        ),
-      'info' => "",
-      'protected' => ""
-    );
+    $result = $this->get_posts(null, $count, 7);
+    $result["data"]["header"] = "Featured";
 
     $this->template->assign("featured_posts_result", $result);
   }
-
 
   public function actual_wiz1() {
     // get current actual dates for editing
@@ -1791,8 +1786,60 @@ class Post_Model extends Base_model {
 
   }
 
+  public function watch () {
+    // watch / unwatch posts for currently logged in user
+
+    $error = "";
+
+    $post_id = 0;
+
+    $status = isset($_POST["sts"]) ? $_POST["sts"] : -1;
+    $user_id = $this->template->get_session_value("user_id", 0);
+
+    $p1 = isset($_POST["_p1_"]) ? $_POST["_p1_"] : "";
+    $p2 = isset($_POST["_p2_"]) ? $_POST["_p2_"] : "";
+
+    $user_id < 1 && $error = "Please log in first";
+
+    if ( strlen($error) < 1 && (strlen($p1) < 1 || strlen($p2) < 1) ) {
+      $error = "Action prohibited - authenticity of request is in doubt";
+    }
+
+    if ( strlen($error) < 1 && !$this->is_equal($p1, $p2) ) {
+      $error = "Action prohibited - validity of request could not be confirmed";
+    }
+
+    if ( strlen($error) < 1 ) {
+      !array_key_exists($status, array(0 => 0, 1 => 1)) && $error = "Invalid request";
+    }
+
+    if ( strlen($error) < 1 ) {
+      list ($post_id, $category_id, $this_org_id, $x) = explode(",", $p1, 4);
+
+      $category_id < 1 && $error = "Sorry a category was not specified";
+    }
+    
+    if ( strlen($error) < 1 ) {
+      $result = $status == 1 ? $this->add_post_watcher ($post_id, $user_id) : $this->remove_post_watcher ($post_id, $user_id);
+    }
+    else {
+      $result = array (
+        'errors' => array (
+            array('message' => $error, 'debug' => "")
+          ),
+        'data' => null,
+        'info' => "",
+      );
+
+    }
+
+    $this->template->assign("watch_post_result", $result);
+    
+    return ($result);
+  }
+
   public function notify_post ($post_id = null, $subject = null) {
-    // send a notification email to the creator and assigned_to
+    // send a notification email to the creator, assigned_to and watchers
 
     $debug = "";
     $error = "";
@@ -1801,6 +1848,7 @@ class Post_Model extends Base_model {
     $user_id = $this->template->get_session_value("User_id", 0);
 
     $post = array();
+    $watchers = array();
 
     is_null($post_id) && $post_id = 0;
     is_null($subject) && $subject = "";
@@ -1813,11 +1861,16 @@ class Post_Model extends Base_model {
           " categories.category, " .
           " creator.email as creator_email, creator.name as creator_name, " .
           " assigned.email as assigned_email, assigned.name as assigned_name from posts " .
-          " right outer join priorities on posts.priority = priorities.id " .
+          " left outer join priorities on posts.priority = priorities.id " .
           " inner join categories on posts.category_id = categories.id " .
           " inner join user_details as creator on posts.created_by = creator.user_id " .
-          " right outer join user_details as assigned on posts.assigned_to = assigned.user_id " .
-          " where posts.id = " . $post_id;
+          " left outer join user_details as assigned on posts.assigned_to = assigned.user_id " .
+          " where posts.id = " . $post_id . "; " .
+          " select user_details.name, user_details.email from post_watchers " .
+          " inner join posts on post_watchers.post_id = posts.id " .
+          " inner join user_details on post_watchers.user_id = user_details.user_id " .
+          " where post_watchers.post_id = " . $post_id . " and not post_watchers.user_id in " .
+          " (posts.created_by, posts.assigned_to); ";
 
       $res = $this->query($query);
 
@@ -1827,6 +1880,8 @@ class Post_Model extends Base_model {
       if ( strlen($error) < 1 ) {
         isset($res[0][0]) && $post = $res[0][0];
         count($post) < 1 && $error = "Sorry the post specified was not found";
+
+        isset($res[1]) && $watchers = $res[1];
       }
 
     }
@@ -1834,19 +1889,26 @@ class Post_Model extends Base_model {
     if ( strlen($error) < 1 ) {
       strlen($subject) < 1 && $subject = $post["title"];
 
-      $mail_to = $post["assigned_email"];
-      !filter_var($mail_to, FILTER_VALIDATE_EMAIL) && $mail_to = null;
+      // only cc if there is an assigned to and/or watchers
+      // ASSUME valid emails
+      $cc = array();
+      $mail_to = null;
 
-      $cc_to = $user_id != $post["assigned_to"] && $post["assigned_to"] != $post["created_by"] ? $post["creator_email"] : null;
-      $cc = !is_null($cc_to) && filter_var($cc_to, FILTER_VALIDATE_EMAIL) ? array($cc_to => $post["creator_name"]) : null;
-
-      // if can't send to assigned, then send to creatpr
-      if ( is_null($mail_to) ) {
-        $mail_to = is_null($cc) ? null : $cc_to;
-        !is_null($mail_to) && $cc_to = null;
+      if ( $post["assigned_to"] < 1 ) {
+        $mail_to = $post["creator_email"];
+      }
+      else {
+        // assigned to exists
+        $mail_to = $post["assigned_email"];
+        $cc[] = array($post["creator_email"] => $post["creator_name"]);
       }
 
       if ( !is_null($mail_to) ) {
+
+        foreach ( $watchers as $w ) {
+          #$cc[] = "'" . $w["email"] . "' => '" . $w["name"] . "'";
+          $cc[] = $w["email"];
+        }
 
         $mailer = new Mailer_Lib();
 
@@ -1884,9 +1946,6 @@ class Post_Model extends Base_model {
     return ($result);
 
   }
-
-
-
 
 
 
@@ -1990,14 +2049,15 @@ class Post_Model extends Base_model {
     return ($result);
   }
 
-  private function get_posts ($user_id = null, $count = null, $created = null) {
-    // get posts assigned to a user if created is not set or false, OR posted created if created is set and true;
+  private function get_posts ($user_id = null, $count = null, $type = null) {
+    // get posts assigned to a user (type 0 - default), posted created (type 3), posts watched (type 5)
+    // posts featured (type 7)
     // if count is passed, get lastest $count posts
 
     $error = "";
     $debug = "";
 
-    is_null($created) && $created = false;
+    is_null($type) && $type = 0;
 
     $posts = array();
 
@@ -2016,11 +2076,31 @@ class Post_Model extends Base_model {
 
     if ( strlen($error) < 1 ) {
 
-      $where = " posts.status in (10, 11) and categories.organisation_id = " . $org_id .
-        " and posts.assigned_to = " . $user_id;
+      // pressume type 0 (assigned)
+      switch ( $type ) {
+        case 3: // created
+          $where = " posts.status in (1, 2, 10, 11) and categories.organisation_id = " . $org_id .
+            " and posts.created_by = " . $user_id;
+          break;
 
-      $created && $where = " posts.status in (1, 2, 10, 11) and categories.organisation_id = " . $org_id .
-        " and posts.created_by = " . $user_id;
+        case 5: // watched
+          $where = " posts.status in (2, 10, 11) and categories.organisation_id = " . $org_id .
+            " and posts.id in ( select post_id from watcher_posts where user_id = " . $user_id . ")";
+          break;
+
+        case 7: // featured
+          $date = new DateTime();
+          $date = $date->sub(new DateInterval('P7D'));
+          
+          $where = " posts.status in (2, 10) and categories.organisation_id = " . $org_id .
+            " and posts.id in ( select post_id from featured_posts where date >= '" .
+            $date->format('Y-m-d H:i') . "')";
+          break;
+
+        default: // assigned to
+          $where = " posts.status in (10, 11) and categories.organisation_id = " . $org_id .
+            " and posts.assigned_to = " . $user_id;
+      }
 
       $query = "select posts.*, categories.category, " .
         " assigned_to.name as assigned_to_name, assigned_to.image_url as assigned_to_image, " .
@@ -2030,7 +2110,7 @@ class Post_Model extends Base_model {
         " left outer join user_details as creator on posts.created_by = creator.user_id " .
         " inner join categories on posts.category_id = categories.id where " .
         $where .
-        " order by posts.priority desc, posts.position, posts.id desc";
+        " order by posts.position, posts.status desc, posts.priority desc, posts.id desc";
 
       $count > 0 && $query = $this->add_limit_clause($query, $count);
 
@@ -2060,6 +2140,110 @@ class Post_Model extends Base_model {
     return ($result);
   }
 
+  private function add_post_watcher ($post_id = null, $user_id = null) {
+    // add a watcher to a post
+    $debug = "";
+    $error = "";
+    $info = "";
+
+    $row = array();
+
+    is_null($post_id) && $post_id = 0;
+    !is_numeric($post_id) && $post_id = 0;
+
+    is_null($user_id) && $user_id = 0;
+    !is_numeric($user_id) && $user_id = 0;
+
+    $post_id < 1 && $error = "A post to watch is required";
+    strlen($error) < 1 && $user_id < 1 && $error = "A user watching this post is required";
+
+    if ( strlen($error) < 1 ) {
+      $sql = "select * from post_watchers where post_id = " . $post_id .
+        " and user_id = " . $user_id;
+
+      $res = $this->query($sql);
+
+      $error = $this->db_error;
+      DEBUG > 0 && $debug = $this->db_debug;
+
+      !is_null($res) && isset($res[0][0]) && $row = $res[0][0];
+    }
+
+    if ( strlen($error) < 1 && count($row) < 1 ) {
+
+      $sql = "insert into post_watchers (post_id, user_id) values (" . $post_id .
+        ", " . $user_id . "); insert into watcher_posts (user_id, post_id) " .
+        "values (" . $user_id . ", " . $post_id . "); " .
+        "select * from post_watchers where post_id = " . $post_id .
+        " and user_id = " . $user_id;
+
+      $sql = $this->set_nocount($sql);
+
+      $res = $this->query($sql);
+
+      $error = $this->db_error;
+      DEBUG > 0 && $debug = $this->db_debug;
+
+      !is_null($res) && isset($res[0][0]) && $row = $res[0][0];
+    }
+
+    $result = array (
+      'errors' => array (
+          array('message' => $error, 'debug' => $debug)
+        ),
+      'data' => array (
+          "id" => $post_id,
+          "sts" => 1,
+          "row" => $row,
+        ),
+      'info' => $info,
+    );
+    
+    return ($result);
+  }
+
+  private function remove_post_watcher ($post_id = null, $user_id = null) {
+    // remove a watcher from a post
+    $debug = "";
+    $error = "";
+    $info = "";
+
+    is_null($post_id) && $post_id = 0;
+    !is_numeric($post_id) && $post_id = 0;
+
+    is_null($user_id) && $user_id = 0;
+    !is_numeric($user_id) && $user_id = 0;
+
+    $post_id < 1 && $error = "A post being watched is required";
+    strlen($error) < 1 && $user_id < 1 && $error = "A user watching this post is required";
+
+    if ( strlen($error) < 1 ) {
+      $sql = "delete from post_watchers where post_id = " . $post_id .
+        " and user_id = " . $user_id . "; delete from watcher_posts where " .
+        " user_id = " . $user_id . " and post_id = " . $post_id . "; " .
+        " select * from users where id = -1; ";
+
+      $sql = $this->set_nocount($sql);
+
+      $res = $this->query($sql);
+
+      $error = $this->db_error;
+      DEBUG > 0 && $debug = $this->db_debug;
+    }
+
+    $result = array (
+      'errors' => array (
+          array('message' => $error, 'debug' => $debug)
+        ),
+      'data' => array (
+          "id" => $post_id,
+          "sts" => 0
+        ),
+      'info' => $info,
+    );
+    
+    return ($result);
+  }
 
 
 

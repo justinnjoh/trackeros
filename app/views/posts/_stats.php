@@ -17,37 +17,43 @@ if ( isset($this->params["stats"]) ) {
     if ( count($main) > 0 ) {
 
 ?>
-    <h5 class="bg-info side-header">
-      Main Stats
-    </h5>
 
-    <table class='stats stats-main'>
-      <thead>
-        <tr>
-        <?php
-          $counts = "";
+      <div class="card">
+        <div class="card-header card-info">
+          Main Stats
+        </div>
 
-          foreach ($main as $item ) {
-            echo "<th title='" . $this->escape_string($item['description']) . "'>" .
-              $item["icon"] . " " . $item["code"] .
-              "</th>" . PHP_EOL;
+        <div class="card-block">
 
-            $count = is_null($item["count"]) ? 0 : $item["count"];
-            $counts .= "<td>" . $count . "</td> " . PHP_EOL;
-          }
-        ?>
-        </tr>
-      </thead>
+        <table class='stats stats-main'>
+          <thead>
+            <tr>
+            <?php
+              $counts = "";
 
-      <tbody>
-        <?php
-          echo "<tr> " .
-            $counts .
-            "</tr>" . PHP_EOL;
-        ?>
-      </tbody>
+              foreach ($main as $item ) {
+                echo "<th title='" . $this->escape_string($item['description']) . "'>" .
+                  $item["icon"] . " " . $item["code"] .
+                  "</th>" . PHP_EOL;
 
-    </table>
+                $count = is_null($item["count"]) ? 0 : $item["count"];
+                $counts .= "<td>" . $count . "</td> " . PHP_EOL;
+              }
+            ?>
+            </tr>
+          </thead>
+
+          <tbody>
+            <?php
+              echo "<tr> " .
+                $counts .
+                "</tr>" . PHP_EOL;
+            ?>
+          </tbody>
+
+        </table>
+      </div>
+    </div>
 
 <?php
     } // main

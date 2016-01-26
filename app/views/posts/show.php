@@ -5,6 +5,7 @@
 $errors = $this->get_errors($this->params["show_post_result"]);
 $protected = $this->get_protected_info($this->params["show_post_result"]);
 $category = isset($this->params["show_post_result"]["data"]["category"]) ? $this->params["show_post_result"]["data"]["category"] : array();
+$status_codes = isset($this->params["show_post_result"]["data"]["status_codes"]) ? $this->params["show_post_result"]["data"]["status_codes"] : array();
 
 $btn_label = isset($this->params["show_post_result"]["data"]["btn_label"]) ? $this->params["show_post_result"]["data"]["btn_label"] : "";
 
@@ -47,13 +48,14 @@ else {
       $caption = "Assigned to";
     }
 
-    $title = $this->escape_string($post["title"]);
+    $title = $this->escape_string($post["title"]) . " - " . $post["id"];
 
     $commenting = $post["commenting"];
 
     $can_action = $post["can_action"];
     $publish_actions = $post["publish_actions"];
     $can_feature = $post["can_feature"];
+    $watching = $post["watching"];
 
     $status = $post["status"];
 
@@ -144,6 +146,22 @@ else {
                   $btn . "</a>";
                 "</li>";
             }
+
+            // watching
+            $sts = 1;
+            $btn = 'Watch';
+            $titl = 'Watch this post';
+
+            if ( $watching > 0 ) {
+              $sts = 0;
+              $btn = 'Unwatch';
+              $titl = 'Stop watching this post';
+            }
+
+            echo "<li id='watch' title='" . $titl . "' class='pull-right'>" .
+              "<a class='btn btn-info btn-sm add-post p-a-0' data-action='watch' href='#' data-sts='" . $sts . "'>" .
+                $btn . "</a>";
+              "</li>";
 
             ?>
 

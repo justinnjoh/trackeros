@@ -1,6 +1,7 @@
 <?php
-define('SITE_ROOT', 'location of tracker, one level above app - eg D:\websites\tracker'); // for references OUTSIDE of application root ie $_SERVER['DOCUMENT_ROOT']; 
-define('DEBUG', 0);
+define('SITE_ROOT', 'D:\websites\tracker'); // for references OUTSIDE of application root ie $_SERVER['DOCUMENT_ROOT']; 
+define('DEBUG', 1);
+//define('DEBUG', 0);
 
 // load loader
 $file = $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "lib" . DIRECTORY_SEPARATOR . "loader.php";

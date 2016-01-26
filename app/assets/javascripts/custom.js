@@ -117,6 +117,7 @@ $(document).ready( function() {
 
 
   $(document).on("click", ".add-post", function (e) {
+    e.preventDefault();
 
     var id = this.dataset.id,
       target = this.dataset.target,
@@ -187,6 +188,14 @@ $(document).ready( function() {
 
       case 'show':
         tracker.show_post(params);
+        break;
+
+      case 'watch':
+        tracker.watch_post(params);
+        break;
+
+      case 'list':
+        tracker.list_posts(params);
         break;
 
       default:

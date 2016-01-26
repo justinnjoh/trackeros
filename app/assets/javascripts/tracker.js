@@ -479,6 +479,22 @@ var tracker = (
 
     }
 
+    function list_posts(params) {
+      // list posts with possible status filters - POST submit the global form
+      var id = typeof(params) === 'object' && params.hasOwnProperty('id') ? params["id"] : 0,
+        form = document.getElementById('global-form'),
+        err = form ? null : "Unable to complete request";
+      
+      if ( !err ) {
+        form.action = "/posts/index/" + id;
+        form.method = "POST";
+        form.submit();
+      }
+      else {
+        log_info(err, "global-form-error", "text-danger");        
+      }
+    }
+
     function add_post() {
       // post form has been submitted - submit normally
 
@@ -759,6 +775,56 @@ var tracker = (
                 }
               },
               log('Publish post error')
+            );
+
+      }
+      else {
+        // input / validation error
+        console.log(data, params);
+      }
+
+    }
+
+    function watch_post (params) {
+      // watch or unwatch post
+
+      var fields = [],
+        data = _get_form_values("global-form", fields);
+
+      if ( !data.error && (typeof(params) !== 'object' || !params.hasOwnProperty('sts')) ) {
+        data.error = "Watch post - invalid request";
+      }
+
+      console.log(data, params);
+
+      if ( !data.error ) {
+
+         data["data"]["sts"] = params.sts;
+
+        _ajax_post ("/posts/watch",
+              data["data"],
+              function (response) {
+
+                var err = _get_ajax_error(response);
+                if ( err.length > 0 ) {
+                  log(err);
+
+                  console.log('Response: ', response);
+                }
+                else {
+                  // change buttons
+                  var id = response.data.id,
+                    sts = response.data.sts == 1 ? 0 : 1,
+                    titl = sts == 1 ? "Watch this post" : "Stop watching this post",
+                    btn = sts == 1 ? "Watch" : "Unwatch",
+                    html = "<a class='btn btn-info btn-sm add-post p-a-0' href='#' data-sts='" +
+                      sts + "' data-action='watch'>" + btn + "</a>";
+
+                  $('#watch').html(html);
+                  $('#watch').attr("title", titl);
+                }
+              },
+              log('Watch post error')
             );
 
       }
@@ -1249,7 +1315,8 @@ var tracker = (
       actual : actual,
       forgot : forgot,
       update_password : update_password,
-
+      watch_post : watch_post,
+      list_posts : list_posts,
 
     };
 

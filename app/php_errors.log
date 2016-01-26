@@ -9,3 +9,17 @@
 [29-Dec-2015 20:58:04 Europe/London] PHP Parse error:  syntax error, unexpected '" left outer join user_details' (T_CONSTANT_ENCAPSED_STRING) in D:\websites\tracker\app\models\post.php on line 1563
 [29-Dec-2015 21:00:02 Europe/London] PHP Parse error:  syntax error, unexpected '" left outer join user_details' (T_CONSTANT_ENCAPSED_STRING) in D:\websites\tracker\app\models\post.php on line 1563
 [29-Dec-2015 22:33:15 Europe/London] PHP Fatal error:  Call to a member function format() on boolean in D:\websites\tracker\app\models\post.php on line 1552
+[15-Jan-2016 13:11:17 Europe/London] PHP Parse error:  syntax error, unexpected '$res' (T_VARIABLE) in D:\websites\tracker\app\models\post.php on line 1976
+[15-Jan-2016 13:11:17 Europe/London] PHP Parse error:  syntax error, unexpected '$res' (T_VARIABLE) in D:\websites\tracker\app\models\post.php on line 1976
+[15-Jan-2016 13:11:17 Europe/London] PHP Parse error:  syntax error, unexpected '$res' (T_VARIABLE) in D:\websites\tracker\app\models\post.php on line 1976
+[15-Jan-2016 13:36:20 Europe/London] PHP Fatal error:  Call to undefined method Post_Model::watched_posts() in D:\websites\tracker\app\controllers\posts.php on line 103
+[15-Jan-2016 14:25:24 Europe/London] PHP Fatal error:  Call to undefined method DateTime::subtract() in D:\websites\tracker\app\models\post.php on line 2096
+[15-Jan-2016 14:25:25 Europe/London] PHP Fatal error:  Call to undefined method DateTime::subtract() in D:\websites\tracker\app\models\post.php on line 2096
+[16-Jan-2016 10:44:30 Europe/London] PHP Parse error:  syntax error, unexpected '$watchers' (T_VARIABLE) in D:\websites\tracker\app\models\post.php on line 1871
+[16-Jan-2016 10:44:30 Europe/London] PHP Parse error:  syntax error, unexpected '$watchers' (T_VARIABLE) in D:\websites\tracker\app\models\post.php on line 1871
+[16-Jan-2016 11:09:24 Europe/London] PHP Parse error:  syntax error, unexpected '=>' (T_DOUBLE_ARROW), expecting ']' in D:\websites\tracker\app\models\post.php on line 1870
+[16-Jan-2016 11:09:24 Europe/London] PHP Parse error:  syntax error, unexpected '=>' (T_DOUBLE_ARROW), expecting ']' in D:\websites\tracker\app\models\post.php on line 1870
+[22-Jan-2016 07:20:04 Europe/London] PHP Parse error:  syntax error, unexpected ';', expecting '(' in D:\websites\tracker\app\models\post.php on line 252
+[23-Jan-2016 09:00:49 Europe/London] PHP Parse error:  syntax error, unexpected '}' in D:\websites\tracker\app\models\post.php on line 59
+[23-Jan-2016 09:00:49 Europe/London] PHP Parse error:  syntax error, unexpected '}' in D:\websites\tracker\app\models\post.php on line 59
+[23-Jan-2016 09:00:49 Europe/London] PHP Parse error:  syntax error, unexpected '}' in D:\websites\tracker\app\models\post.php on line 59

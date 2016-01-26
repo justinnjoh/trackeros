@@ -1,0 +1,15 @@
+CREATE TABLE IF NOT EXISTS watcher_posts (
+  user_id int NOT NULL,
+  post_id int NOT NULL
+)
+engine = InnoDB;
+
+CREATE UNIQUE INDEX `idx_watcher_posts_user_id_post_id` ON watcher_posts (user_id, post_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT;
+
+CREATE TABLE IF NOT EXISTS post_watchers (
+  post_id int NOT NULL,
+  user_id int NOT NULL
+)
+engine = InnoDB;
+
+CREATE UNIQUE INDEX `idx_post_watchers_post_id_user_id` ON post_watchers (post_id, user_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT;

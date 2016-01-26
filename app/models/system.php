@@ -155,15 +155,18 @@ truncate table categories;
 truncate table errors;
 truncate table featured_posts;
 truncate table organisations;
-truncate table posts;
 truncate table post_comments;
 truncate table post_files;
+truncate table post_watchers;
+truncate table posts;
 truncate table pre_uploads;
 truncate table priorities;
+truncate table status_codes;
 truncate table user_details;
 truncate table user_tokens;
 truncate table users;
 truncate table visits;
+truncate table watcher_posts;
 
 set identity_insert organisations on;
 insert into organisations (id, organisation, description, domain, url, created_by, status) values (9, 'Simple Tracker', 'Default organisation for Simple Tracker', '', '', 10, 10);
@@ -236,15 +239,18 @@ truncate table categories;
 truncate table errors;
 truncate table featured_posts;
 truncate table organisations;
-truncate table posts;
 truncate table post_comments;
 truncate table post_files;
+truncate table post_watchers;
+truncate table posts;
 truncate table pre_uploads;
 truncate table priorities;
+truncate table status_codes;
 truncate table user_details;
 truncate table user_tokens;
 truncate table users;
 truncate table visits;
+truncate table watcher_posts;
 
 insert into organisations (id, organisation, description, domain, url, created_by, status) values (9, 'Simple Tracker', 'Default organisation for Simple Tracker', '', '', 10, 10);
 
@@ -575,6 +581,27 @@ ALTER TABLE [dbo].[errors] ADD  CONSTRAINT [DF_errors_count]  DEFAULT ((0)) FOR 
 ALTER TABLE [dbo].[errors] ADD  CONSTRAINT [DF_errors_last_visit_id]  DEFAULT ((0)) FOR [last_visit_id];
 ALTER TABLE [dbo].[errors] ADD  CONSTRAINT [DF_errors_last_error_date]  DEFAULT (NULL) FOR [last_error_date];
 
+CREATE TABLE [dbo].[watcher_posts](
+  [user_id] [int] NOT NULL,
+  [post_id] [int] NOT NULL,
+ CONSTRAINT [PK_watcher_posts] PRIMARY KEY CLUSTERED 
+(
+  [user_id] ASC,
+  [post_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY];
+
+CREATE TABLE [dbo].[post_watchers](
+  [post_id] [int] NOT NULL,
+  [user_id] [int] NOT NULL,
+ CONSTRAINT [PK_post_watchers] PRIMARY KEY CLUSTERED 
+(
+  [post_id] ASC,
+  [user_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY];
+
+
 select * from users where id = -1;
 EOT;
 
@@ -847,6 +874,23 @@ CREATE TABLE IF NOT EXISTS visits (
 )
 engine = InnoDB
 AUTO_INCREMENT = 11;
+
+
+CREATE TABLE IF NOT EXISTS watcher_posts (
+  user_id int NOT NULL,
+  post_id int NOT NULL
+)
+engine = InnoDB;
+
+CREATE UNIQUE INDEX `idx_watcher_posts_user_id_post_id` ON watcher_posts (user_id, post_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT;
+
+CREATE TABLE IF NOT EXISTS post_watchers (
+  post_id int NOT NULL,
+  user_id int NOT NULL
+)
+engine = InnoDB;
+
+CREATE UNIQUE INDEX `idx_post_watchers_post_id_user_id` ON post_watchers (post_id, user_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT;
 
 select * from users where id = -1;
 EOT;

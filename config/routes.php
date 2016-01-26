@@ -11,6 +11,7 @@ return array(
             "posts/postsassigned",
             "posts/stats",
             "posts/featured",
+            "posts/watched",
       	  )
         ),
       'member' => array(
@@ -19,6 +20,7 @@ return array(
             "posts/postsassigned",
             "posts/stats",
             "posts/featured",
+            "posts/watched",
       	  )
         )
     ),

@@ -45,6 +45,14 @@ class Posts_Controller extends Base_Controller {
     $this->template->render("feature_post_result", "json");
   }
 
+  public function watch() {
+    $u = new Post_model($this->template, $this->router->query_string);
+
+    $u->watch($this->router->id);
+
+    $this->template->render("watch_post_result", "json");
+  }
+
   public function publish() {
     $u = new Post_model($this->template, $this->router->query_string);
 
@@ -95,6 +103,12 @@ class Posts_Controller extends Base_Controller {
     // get posts assigned to logged in user - usually for display on the right column
     $u = new Post_Model($this->template, $this->router->query_string);
     $u->posts_assigned();
+  }
+
+  public function watched() {
+    // get watched posts - usually for display on the right column
+    $u = new Post_Model($this->template, $this->router->query_string);
+    $u->posts_watched();
   }
 
   public function assignedtome() {
