@@ -58,30 +58,3 @@
   </div>
 
 </div>
-
-<?php
-if (DEBUG > 0) {
-  echo "<br />";
-  $d = new Debug_lib();
-  $d->print_hash($_SESSION, "_SESSION");
-
-  echo "<p />";
-
-  if (DEBUG == 1) { 
-    $d->print_object($this->params);
-  }
-  else {
-    $d->print_object($this);
-  }
-  
-  echo "<p />";
-  $d->print_hash($_COOKIE, "_COOKIE");
-
-  //echo "<p />";
-  //print_r($this);
-
-  var_dump($_COOKIE);
-  //print_r($_REQUEST);
-}
-
-?>

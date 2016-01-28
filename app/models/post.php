@@ -1900,14 +1900,14 @@ class Post_Model extends Base_model {
       else {
         // assigned to exists
         $mail_to = $post["assigned_email"];
-        $cc[] = array($post["creator_email"] => $post["creator_name"]);
+        $cc[$post["creator_email"]] = $post["creator_name"];
       }
 
       if ( !is_null($mail_to) ) {
 
         foreach ( $watchers as $w ) {
-          #$cc[] = "'" . $w["email"] . "' => '" . $w["name"] . "'";
-          $cc[] = $w["email"];
+          $cc[$w["email"]] = $w["name"];
+          #$cc[] = $w["email"];
         }
 
         $mailer = new Mailer_Lib();
