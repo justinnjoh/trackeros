@@ -43,6 +43,12 @@
         </a>
       </span>
 
+      <span class='block'>
+        <a target="_new" href="http://www.lisol.co.uk/">
+          Lisol Ltd
+        </a>
+      </span>
+
     </div>
 
     <div class="col-md-4 col-xs-6">
