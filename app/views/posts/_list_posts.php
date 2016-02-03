@@ -44,7 +44,9 @@ if ( !is_null($header) ) {
     <div class="media">
       <a class="media-left" href="/users/show/<?php echo $user_id; ?>">
         <img class="media-object thumb" src="<?php echo $image; ?>" alt="<?php echo $this->escape_string($caption) . ' ' . $this->escape_string($name); ?>" title="<?php echo $this->escape_string($caption) . ' ' . $this->escape_string($name); ?>">
-        <?php echo $name; ?>
+        <span title="<?php echo $caption; ?>">
+          <?php echo $name; ?>
+        </span>
       </a>
       <div class="media-body">
         <h4 class="media-heading">

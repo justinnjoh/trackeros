@@ -355,6 +355,8 @@ else {
                         echo $this->time_diff($item['created_at']) .
                           " ago at " .
                           $this->get_datetime_string($item['created_at']); 
+
+                        echo "<span class='p-l'>#" . $id . "</span>"; 
                       ?>
                     </li>
 
