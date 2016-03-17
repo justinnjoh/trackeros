@@ -6,9 +6,11 @@ An application demonstrating a robust MVC pattern for rapid development of websi
 ##Some highlights
 
 **1. Simple REST-full URLs with automatic routing**
+
 For example in the URL http://www.tracker.com/users/show/50 the route is autmatically mapped to an action 'show' in the controller 'users'. Static routes are available and take precedence over automatic routes.
 
 **2. Simple uniform database access pattern with multiple resultsets assumed**
+
 All DB access takes the form:
 ```
   $result = $this->query(<some query>)
@@ -16,6 +18,7 @@ All DB access takes the form:
 `$result` now contains resultsets ordered from 0 to n.
 
 **3. Simple but robust form processing pattern with validation**
+
 The front end contains a javascript library with many utility functions, including simple form processing. For example,
 ```
       var fields = [
@@ -32,3 +35,7 @@ The front end contains a javascript library with many utility functions, includi
               ..
               });
 ```            
+##Help
+
+A community site for `tracker` is available at http://tracker.lisol.co.uk
+An installation and setup guide is available from http://tracker.lisol.co.uk/posts/show/504
