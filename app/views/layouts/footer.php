@@ -53,11 +53,17 @@
 
     <div class="col-md-4 col-xs-6">
       <strong class='text-info'>
-        Contact
+        Contact / Support
       </strong>
 
       <span class='block'>
-        tracker [at] lisol [dot] co [dot] uk
+        info [at] lisol [dot] co [dot] uk
+      </span>
+
+      <span class='block'>
+        <a href="http://tracker.lisol.co.uk" target="_new">
+          tracker.lisol.co.uk
+        </a>
       </span>
     </div>
 

@@ -1,5 +1,6 @@
 # trackeros
-##Simple issue tracker
+
+A simple issue tracker
 
 An application demonstrating a robust MVC pattern for rapid development of websites small or large.
 

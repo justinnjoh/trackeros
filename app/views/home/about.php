@@ -24,7 +24,7 @@
     </h4>
 
     <pre>
-    Copyright (C) 2015  Justin Njoh, Lisol Ltd
+    Copyright (C) 2015 Lisol Ltd, info [at] lisol [dot] co [dot] uk
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
